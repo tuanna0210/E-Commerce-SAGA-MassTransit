@@ -1,5 +1,7 @@
 ﻿using BuildingBlocks.CQRS;
+using BuildingBlocks.Messaging.Events;
 using Mapster;
+using MassTransit;
 using Order.API.Dtos;
 using Order.API.Models;
 
@@ -7,18 +9,23 @@ namespace Order.API.Orders.CreateOrder
 {
     public record CreateOrderCommand(CreateOrderDto Order) : ICommand<CreateOrderResult>;
     public record CreateOrderResult(Guid OrderId);
-    public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, CreateOrderResult>
+    public class CreateOrderCommandHandler(
+        ApplicationDbContext context,
+        IPublishEndpoint publishEndpoint
+        ) : ICommandHandler<CreateOrderCommand, CreateOrderResult>
     {
-        private readonly ApplicationDbContext _context;
-        public CreateOrderCommandHandler(ApplicationDbContext context)
-        {
-            _context = context;
-        }
         public async Task<CreateOrderResult> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
             var order = request.Order.Adapt<Order.API.Models.Order>();
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
+            context.Orders.Add(order);
+            await context.SaveChangesAsync(cancellationToken);
+
+            await publishEndpoint.Publish<OrderCreatedEvent>(new OrderCreatedEvent
+            {
+                OrderId = order.Id,
+                UserId = order.UserId
+            }, cancellationToken);
+
             return new CreateOrderResult(order.Id);
         }
     }
