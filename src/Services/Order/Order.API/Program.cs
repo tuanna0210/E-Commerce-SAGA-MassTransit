@@ -1,3 +1,4 @@
+using BuildingBlocks.Messaging.MassTransit;
 using Order.API;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddServices(builder.Configuration);
+builder.Services.AddMessageBroker(builder.Configuration);
 
 var app = builder.Build();
 
