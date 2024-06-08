@@ -23,7 +23,7 @@ namespace Order.API.Orders.CreateOrder
             await publishEndpoint.Publish<OrderCreatedEvent>(new OrderCreatedEvent
             {
                 OrderId = order.Id,
-                UserId = order.UserId
+                CustomerId = order.CustomerId
             }, cancellationToken);
 
             return new CreateOrderResult(order.Id);

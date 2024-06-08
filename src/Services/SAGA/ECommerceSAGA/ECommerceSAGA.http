@@ -1,0 +1,6 @@
+@ECommerceSAGA_HostAddress = http://localhost:5074
+
+GET {{ECommerceSAGA_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

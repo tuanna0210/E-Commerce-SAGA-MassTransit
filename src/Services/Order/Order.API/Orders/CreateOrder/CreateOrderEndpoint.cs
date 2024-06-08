@@ -5,7 +5,7 @@ using Order.API.Dtos;
 
 namespace Order.API.Orders.CreateOrder;
 
-public record CreateOrderRequest(Guid UserId);
+public record CreateOrderRequest(Guid CustomerId);
 public record CreateOrderResponse(Guid OrderId);
 
 public class CreateOrderEndpoint : ICarterModule
@@ -17,7 +17,7 @@ public class CreateOrderEndpoint : ICarterModule
             var command = new CreateOrderCommand(request.Adapt<CreateOrderDto>());
             var result = await sender.Send(command);
 
-            var response = new CreateOrderRequest(Guid.NewGuid());
+            var response = new CreateOrderResponse(result.OrderId);
             return Results.Ok(response);
         });
     }

@@ -28,12 +28,45 @@ namespace Order.API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Order.API.SAGA.ECommerceSagaData", b =>
+                {
+                    b.Property<Guid>("CorrelationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CurrentState")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DeliveryCreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("InventoryPreservedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("OrderCompletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("OrderCreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("OrderPaidDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("CorrelationId");
+
+                    b.ToTable("SagaData");
                 });
 #pragma warning restore 612, 618
         }
